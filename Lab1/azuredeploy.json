@@ -16,9 +16,18 @@
             "type":"string",
             "defaultValue": "webApp1",
             "minLength": 3,
-            "maxLength": 24,
+            "maxLength": 50,
             "metadata": {
                 "description": "This is the name of the web application."
+            }
+        },
+        "servicePlanName": {
+            "type":"string",
+            "defaultValue": "freeServicePlan",
+            "minLength": 3,
+            "maxLength": 50,
+            "metadata": {
+                "description": "This is the name of the serviceplan."
             }
         }
     },
@@ -44,21 +53,38 @@
             "type": "Microsoft.Web/sites",
             "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
-            "tags": {
-                "displayName": "Web App - Lab 1"
-            },
             "dependsOn": [
-                
+                "[resourceId('Microsoft.Web/serverfarms', parameters('servicePlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "properties": {
                 "name": "[parameters('webAppName')]",
                 "siteConfig": {
                     "appSettings": [],
-                    "linuxFxVersion": "NODE|14-lts",
-                    "alwaysOn": "false"
+                    "linuxFxVersion": "NODE|lts",
+                    "alwaysOn": false
                 },
-                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', 'ASP-SDLabs-b4ad')]",
-                "clientAffinityEnabled": false
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('servicePlanName'))]",
+                "clientAffinityEnabled": false,
+                "httpsOnly": true
+            }
+        },
+        {
+            "name": "[parameters('servicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "kind": "linux",
+            "sku": {
+                "name": "F1",
+                "tier": "Free",
+                "capacity": 1
+            },
+            "properties": {
+                "name": "[parameters('servicePlanName')]",
+                "targetWorkerCount":1,
+                "targetWorkerSizeId":0,
+                "reserved": true
             }
         }
     ],
