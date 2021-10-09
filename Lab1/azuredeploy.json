@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "functions": [],
+    "parameters": {
+        "storageAccountName": {
+            "type":"string",
+            "defaultValue": "storage1",
+            "minLength": 3,
+            "maxLength": 24,
+            "metadata": {
+                "description": "This is the name of the storage account."
+            }
+        },
+        "webAppName": {
+            "type":"string",
+            "defaultValue": "webApp1",
+            "minLength": 3,
+            "maxLength": 24,
+            "metadata": {
+                "description": "This is the name of the web application."
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-04-01",
+            "tags": {
+                "displayName": "Storage Account - Lab 1"
+            },
+            "location": "[resourceGroup().location]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            }
+        },
+        {
+            "name": "[parameters('webAppName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2020-12-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "Web App - Lab 1"
+            },
+            "dependsOn": [
+                
+            ],
+            "properties": {
+                "name": "[parameters('webAppName')]",
+                "siteConfig": {
+                    "appSettings": [],
+                    "linuxFxVersion": "NODE|14-lts",
+                    "alwaysOn": "false"
+                },
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', 'ASP-SDLabs-b4ad')]",
+                "clientAffinityEnabled": false
+            }
+        }
+    ],
+    "outputs": {}
+}
