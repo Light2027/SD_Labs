@@ -12,6 +12,8 @@ run the bash script:
 bash deploymentScript.sh
 ```
 
+There are some parameters that I put in here so that I may reuse it in the future.
+
 ## Design choices:
 I originally wanted to use the PowerShell Interface of Azure but it did not wish to cooperate no matter what, so I later switched to the CLI (Command Line Interface).  
 Port 8080 is used in the App as Azure use that on my end by default, and it did not find the original port I set (3000). This made it so that even though the web app ran it did not display "Hello world".  
