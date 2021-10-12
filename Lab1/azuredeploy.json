@@ -12,7 +12,6 @@
                 "description": "This is the name of the storage account."
             }
         },
-        
         "webAppName": {
             "type":"string",
             "defaultValue": "webApp1",
@@ -22,6 +21,13 @@
                 "description": "This is the name of the web application."
             }
         },
+        "webAppAlwaysOn":{
+            "type": "bool",
+            "defaultValue": false,
+            "metadata":{
+                "description": "If true then the web app is always on."
+            }
+        },
         "servicePlanName": {
             "type":"string",
             "defaultValue": "freeServicePlan",
@@ -29,6 +35,50 @@
             "maxLength": 50,
             "metadata": {
                 "description": "This is the name of the serviceplan."
+            }
+        },
+        "servicePlanSKUName": {
+            "type": "string",
+            "defaultValue": "F1",
+            "metadata": {
+                "description": "The acronym of the desired serviceplan."
+            }
+        },
+        "servicePlanSKUTier": {
+            "type": "string",
+            "defaultValue": "Free",
+            "metadata": {
+                "description": "The tier of the desired service plan."
+            }
+        },
+        "servicePlanSKUCapacity": {
+            "type": "int",
+            "defaultValue": 1,
+            "maxValue": 40,
+            "metadata": {
+                "description": "The current number of instances/things assigned to the resource/serviceplan."
+            }
+        },
+        "servicePlanTargetWorkerCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "maxValue": 40,
+            "metadata": {
+                "description": "The number of desired workers."
+            }
+        },
+        "servicePlanKind": {
+            "type": "string",
+            "defaultValue":"linux",
+            "metadata": {
+                "description": "The operating system of the service plan: linux | windows"
+            }
+        },
+        "servicePlanReserved": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "True if it is a linux serviceplan otherwise windows."
             }
         }
     },
@@ -60,7 +110,7 @@
                 "siteConfig": {
                     "appSettings": [],
                     "linuxFxVersion": "NODE|14-lts",
-                    "alwaysOn": false
+                    "alwaysOn": "[parameters('webAppAlwaysOn')]"
                 },
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('servicePlanName'))]",
                 "clientAffinityEnabled": false,
@@ -72,17 +122,17 @@
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2020-12-01",
             "location": "[resourceGroup().location]",
-            "kind": "linux",
+            "kind": "[parameters('servicePlanKind')]",
             "sku": {
-                "name": "F1",
-                "tier": "Free",
-                "capacity": 1
+                "name": "[parameters('servicePlanSKUName')]",
+                "tier": "[parameters('servicePlanSKUTier')]",
+                "capacity": "[parameters('servicePlanSKUCapacity')]"
             },
             "properties": {
                 "name": "[parameters('servicePlanName')]",
-                "targetWorkerCount":1,
+                "targetWorkerCount":"[parameters('servicePlanTargetWorkerCount')]",
                 "targetWorkerSizeId":0,
-                "reserved": true
+                "reserved": "[parameters('servicePlanReserved')]"
             }
         }
     ],
