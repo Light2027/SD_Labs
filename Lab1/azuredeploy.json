@@ -61,29 +61,13 @@
                 "name": "[parameters('webAppName')]",
                 "siteConfig": {
                     "appSettings": [],
-                    "linuxFxVersion": "NODE|lts",
+                    "linuxFxVersion": "NODE|14-lts",
                     "alwaysOn": false
                 },
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('servicePlanName'))]",
                 "clientAffinityEnabled": false,
                 "httpsOnly": true
-            },
-            "resources":[
-                {
-                    "type": "sourcecontrols",
-                    "apiVersion": "2020-12-01",
-                    "name": "sourceControl",
-                    "location": "[resourceGroup().location]",
-                    "dependsOn":[
-                        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
-                    ],
-                    "properties":{
-                        "repoUrl": "https://github.com/Light2027/Node.JS_HelloWorld_Azure_CI.git",
-                        "branch": "main",
-                        "isManualIntegration" : false
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "[parameters('servicePlanName')]",
