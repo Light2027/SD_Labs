@@ -12,6 +12,7 @@
                 "description": "This is the name of the storage account."
             }
         },
+        
         "webAppName": {
             "type":"string",
             "defaultValue": "webApp1",
@@ -38,9 +39,6 @@
             "name": "[parameters('storageAccountName')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2021-04-01",
-            "tags": {
-                "displayName": "Storage Account - Lab 1"
-            },
             "location": "[resourceGroup().location]",
             "kind": "StorageV2",
             "sku": {
