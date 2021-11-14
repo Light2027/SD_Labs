@@ -1,0 +1,31 @@
+version: "3.9" # The version number of the Docker Compose file
+    
+services: # The Services used go below
+  db:
+    image: mysql:5.7 # Specifies the image file
+    volumes: # Specifies the volume to use + path for persistent storage
+      - db_data:/var/lib/mysql
+    restart: always # Specifies restart-policy
+    environment: # Specifies environment variables
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    
+  wordpress:
+    depends_on: # Specifies the dependencies
+      - db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    ports: # Port forwarding LocalPort:DockerPort
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+volumes: # Volumes create a folder on the host machine where data used by the images is stored
+  db_data: {}
+  wordpress_data: {}
