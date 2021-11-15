@@ -16,8 +16,21 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && service apache2 
 # Install PHP
 RUN apt install -y php5 libapache2-mod-php5 php5-mcrypt php5-mysql
 
-# Install and configure Wordpress
+# Set the working directory + volume
+WORKDIR /var/www/html
+VOLUME /var/www/html
 
+# Install Wordpress
+RUN apt install -y wget unzip
+RUN wget http://wordpress.org/latest.zip && \
+    unzip -q latest.zip -d . && \
+    cd wordpress && \
+    cp -a * .. && \
+    cd .. && \
+    rm -r latest.zip && \
+    rm -r wordpress && \
+    rm index.html && \
+    chown www-data:www-data -R /var/www/html/
 
 EXPOSE 80
 

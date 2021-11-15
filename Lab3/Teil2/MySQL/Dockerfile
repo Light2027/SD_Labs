@@ -22,6 +22,9 @@ RUN apt -y install mysql-server && \
 
 EXPOSE 3306 33060
 
+# Set volume
+VOLUME /var/lib/mysql
+
 # Doing the configuration here as this is more convinient to the user and it works.
 CMD service mysql restart && \
     mysql --password=${MYSQL_ROOT_PASSWORD} -e "CREATE USER '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'" || true && \

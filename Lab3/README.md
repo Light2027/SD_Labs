@@ -41,13 +41,16 @@ Here the first problem I encountered was php, it requires a version like "php7" 
 Also I could only get PHP5 to work on it...
 Here I encountered the following error **apache2AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message**, to solve this problem I just needed to attach "ServerName localhost" to the end of the "/etc/apache2/apache2.conf" file.
 I also had a problem with keeping the container alive as apache is a background service, I simply added "&& tail -f /dev/null" to the end of my CMD.
+Afterward I just had to follow this tutorial (https://idroot.us/install-wordpress-debian-8/) + a bit of reasoning (looking at the compose file from Teil1 and making connections) to install wordpress.
 
+One more thing I could not connect to the database in wordpress however I could ping it, see dbPing.png, as that was not the main point of the exercise and I have put in more work into this than I would have ever wanted to I just decided to ignore this.
 
 ## Steps to build
 You don't need to build it, it is done in the compose file.
 Should however for some reason want to do that execute the following command in the directories of the docker image:
 ```console
 docker build -t yourTag .
+docker run -p <localPort>:<containerPort> yourTag
 ```
 
 ## Steps to deploy
