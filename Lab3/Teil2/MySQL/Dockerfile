@@ -18,7 +18,8 @@ RUN echo "mysql-server mysql-server/root_password_again password ${MYSQL_ROOT_PA
 # RUNs are completely isolated from one another, so use &&
 RUN apt -y install mysql-server && \
     service mysql restart && \
-    printf "${MYSQL_ROOT_PASSWORD}\nn\ny\ny\ny\n" | mysql_secure_installation
+    printf "${MYSQL_ROOT_PASSWORD}\nn\ny\ny\ny\n" | mysql_secure_installation && \
+    sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 EXPOSE 3306 33060
 
@@ -27,12 +28,12 @@ VOLUME /var/lib/mysql
 
 # Doing the configuration here as this is more convinient to the user and it works.
 CMD service mysql restart && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "CREATE USER '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'" || true && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "CREATE USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}'" || true && \
     mysql --password=${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE}" && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT INSERT ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost'" && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT DELETE ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost'" && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT CREATE ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost'" && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT DROP ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost'" && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT SELECT ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost'" && \
-    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT UPDATE ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost'" && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT INSERT ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%'" && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT DELETE ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%'" && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT CREATE ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%'" && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT DROP ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%'" && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT SELECT ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%'" && \
+    mysql --password=${MYSQL_ROOT_PASSWORD} -e "GRANT UPDATE ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%'" && \
     mysqld

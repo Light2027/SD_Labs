@@ -1,5 +1,11 @@
 FROM debian:jessie
 
+# Define ENVs
+ENV WORDPRESS_DB_HOST=3306
+ENV WORDPRESS_DB_USER=wordpress
+ENV WORDPRESS_DB_PASSWORD=wordpress
+ENV WORDPRESS_DB_NAME=wordpress
+
 # Mandatory Update
 RUN apt update
 
@@ -13,6 +19,7 @@ RUN apt install -y php5 libapache2-mod-php5 php5-mcrypt php5-mysql unzip
 # Set the working directory + volume
 WORKDIR /var/www/html
 COPY wordpress-5.8.2.zip .
+COPY wp-config.php .
 VOLUME /var/www/html
 
 # Install Wordpress
@@ -23,7 +30,8 @@ RUN unzip -q wordpress-5.8.2.zip -d . && \
     rm -r wordpress-5.8.2.zip && \
     rm -r wordpress && \
     rm index.html && \
-    chown www-data:www-data -R /var/www/html/
+    chown www-data:www-data -R /var/www/html
+
 
 EXPOSE 80
 

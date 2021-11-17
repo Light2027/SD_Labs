@@ -18,6 +18,9 @@ https://askubuntu.com/questions/256013/apache-error-could-not-reliably-determine
 https://stackoverflow.com/questions/13702425/source-command-not-found-in-sh-shell
 https://serverfault.com/questions/661909/the-right-way-to-keep-docker-container-started-when-it-used-for-periodic-tasks
 https://github.com/docker-library/wordpress
+https://stackoverflow.com/questions/341608/mysql-config-file-location-redhat-linux-server
+https://www.tecmint.com/fix-error-1130-hy000-host-not-allowed-to-connect-mysql/
+https://stackoverflow.com/questions/8348506/grant-remote-access-of-mysql-database-from-any-ip-address
 
 # Part 1
 Here I just took the official compose file from https://docs.docker.com/samples/wordpress/  
@@ -44,8 +47,12 @@ I encountered the following error **apache2AH00558: apache2: I could not reliabl
 I also had a problem keeping the container alive as apache is a background service. I added "&& tail -f /dev/null" to the end of my CMD.
 Afterwards, I just had to follow this tutorial (https://idroot.us/install-wordpress-debian-8/) + a bit of reasoning (looking at the compose file from Teil1 and making connections) to install WordPress.
 
-One more thing I could not connect to the database in WordPress. However, I could ping it, see dbPing.png, as that was not the main point of the exercise, and I have put in more work into this than I would have ever wanted to. So I just decided to leave it like this.
-I removed the environment variables from WP Dockerfile as I could not get any use out of them, even after trying to imitate this https://github.com/docker-library/wordpress.
+~~One more thing I could not connect to the database in WordPress. However, I could ping it, see dbPing.png, as that was not the main point of the exercise, and I have put in more work into this than I would have ever wanted to. So I just decided to leave it like this.
+I removed the environment variables from WP Dockerfile as I could not get any use out of them, even after trying to imitate this https://github.com/docker-library/wordpress.~~  
+  
+**Nevermind**, after asking around I got some help from Konstantin, who told me what the problem is and told me to use the following command to replace what the mysql server is listening on: "sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf".
+I also cached WordPress and copied a **wp-config.php** file I got from the original WordPress docker repository, so that I can make use of the same environmental variables:  https://github.com/docker-library/wordpress/blob/master/wp-config-docker.php
+I only had one final problem. Namely, I configured the user's account to only have access to the database from the localhost, which I switched to a wild card ('%') later on, as the underlying Docker network should be isolated enough. After that, everything worked.
 
 ## Steps to build
 You do not need to build it. It is done in the compose file.
