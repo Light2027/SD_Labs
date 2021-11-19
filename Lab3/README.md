@@ -59,11 +59,18 @@ You do not need to build it. It is done in the compose file.
 Should however for some reason want to do that execute the following command in the directories of the docker image:
 ```console
 docker build -t yourTag .
-docker run -p <localPort>:<containerPort> yourTag
+docker run -e ENVVAR=SomeValue -e ENVVAR2=SomeOtherValue -p <localPort>:<containerPort> yourTag
+```
+Or
+```console
+docker-compose build
+docker-compose up -d
 ```
 
 ## Steps to deploy
+**The environment variables can be set in the compose file.**
 Just run the following script in this directory.
+The images are automatically built or used if they were already built.
 ```console
 docker-compose up -d
 ```
