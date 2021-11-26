@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment
+  labels: # Anything can be labeled in K8s and identify stuff based on it
+    app: wordpress
+spec:
+  replicas: 3
+  selector:
+    matchLabels: # This says that all pods that match the label belong to this deployment
+      app: wordpress
+  template: # This is for configuring the pod that is to be deployed.
+    metadata:
+      labels: # Anything can be labeled in K8s and identify stuff based on it
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress-front-end
+        image: istvan1997/wordpress:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            configMapKeyRef: # Instead of secretKeyRef, ConfigMaps have configMapKeyRef
+              name: wordpress-config
+              key: WORDPRESS_DB_HOST
+
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-secret
+              key: WORDPRESS_DB_USER
+
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-secret
+              key: WORDPRESS_DB_PASSWORD
+
+        - name: WORDPRESS_DB_NAME
+          # value: # Would directly assign a value to the environment variable
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-secret
+              key: WORDPRESS_DB_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-service
+spec:
+  type: NodePort # ClusterIp == Internal Service (this is the default), NodePort == External service
+  selector:
+    app: wordpress
+  ports:
+    - protocol: TCP
+      port: 80 # This can be any port you want, but usually has the same value as target port
+      targetPort: 80 # This is the port of the pod so this == containerPort
+      nodePort: 30000 # This is the external port, it must be between 30000 and 32767...

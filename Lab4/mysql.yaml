@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels: # Anything can be labeled in K8s and identify stuff based on it
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels: # This says that all pods that match the label belong to this deployment
+      app: mysql
+  template: # This is for configuring the pod that is to be deployed.
+    metadata:
+      labels: # Anything can be labeled in K8s and identify stuff based on it
+        app: mysql
+    spec:
+      containers:
+      - name: mysqldb # This is just the name of the container
+        image: istvan1997/mysql:latest
+        ports:
+        - containerPort: 3306 # Same as the exposed port in Docker
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-secret
+              key: WORDPRESS_DB_NAME
+
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-secret
+              key: WORDPRESS_DB_USER
+
+        - name: MYSQL_PASSWORD
+          # value: # Would directly assign a value to the environment variable
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-secret
+              key: WORDPRESS_DB_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306 # This can be any port you want, but usually has the same value as target port
+      targetPort: 3306 # This is the port of the pod so this == containerPort
