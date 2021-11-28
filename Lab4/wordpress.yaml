@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: wordpress-front-end
-        image: istvan1997/wordpress:latest
+        image: istvan1997/wordpress:latest # wordpress:latest # The original version I tried
         ports:
         - containerPort: 80
         env:

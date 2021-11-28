@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mysqldb # This is just the name of the container
-        image: istvan1997/mysql:latest
+        image: istvan1997/mysql:latest # mysql:5.7 # The original version I tried 
         ports:
         - containerPort: 3306 # Same as the exposed port in Docker
         env:
