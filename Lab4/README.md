@@ -76,6 +76,9 @@ See images below for when it worked:
 ![Wordpress Service with LoadBalancer](Images/Working.PNG)
 ![Wordpress Hello World](Images/Working2.PNG)
 
+## PS
+After thinking about it, I decided to use the official MySQL image, instead of my own, as that one is stable.
+
 ## Composition
 My solution consists of the following files:
 + mysql-secret.yaml  

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mysqldb # This is just the name of the container
-        image: istvan1997/mysql:latest # mysql:5.7 # The original version I tried 
+        image: mysql:5.7 # istvan1997/mysql:latest # My own image, it works, but it is unstable on azure, so I decide to use the original here instead.
         ports:
         - containerPort: 3306 # Same as the exposed port in Docker
         env:
